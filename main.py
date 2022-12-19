@@ -82,8 +82,7 @@ def get_vacancies_stats_by_languages(languages):
 def get_number_of_processed_salaries(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
-        if predict_rub_salary(vacancy):
-            processed_salaries.append(predict_rub_salary(vacancy))
+        processed_salaries.append(predict_rub_salary(vacancy))
     return len(processed_salaries)
 
 
@@ -187,8 +186,7 @@ def get_all_vacancies_by_language_for_superjob(language, access_token):
 def get_number_of_processed_salaries_for_superjob(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
-        if predict_rub_salary_for_superJob(vacancy):
-            processed_salaries.append(predict_rub_salary_for_superJob(vacancy))
+        processed_salaries.append(predict_rub_salary_for_superJob(vacancy))
     if processed_salaries:
         return len(processed_salaries)
     return None
