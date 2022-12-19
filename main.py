@@ -108,7 +108,7 @@ def get_salary_average(vacancies):
 
 def get_hh_stats_table():
     vacancies_salary_statistics = {}
-    table_data = [
+    vacancies_table = [
         (
             'Язык программирования',
             'Найдено вакансий',
@@ -124,7 +124,7 @@ def get_hh_stats_table():
             'average_salary': get_salary_average(vacancies)
         }
     for language in vacancies_salary_statistics:
-        table_data.append(
+        vacancies_table.append(
             (
                 language,
                 vacancies_salary_statistics[language].get('vacancies_found'),
@@ -134,7 +134,7 @@ def get_hh_stats_table():
                 vacancies_salary_statistics[language].get('average_salary')
             )
         )
-    table_instance = AsciiTable(table_data, 'HeadHunter Moscow')
+    table_instance = AsciiTable(vacancies_table, 'HeadHunter Moscow')
     return table_instance
 
 
@@ -233,7 +233,7 @@ def get_salary_average_for_superjob(vacancies):
 
 def get_sj_stats_table(access_token):
     vacancies_salary_statistics = {}
-    table_data = [
+    vacancies_table = [
                 (
                     'Язык программирования',
                     'Найдено вакансий',
@@ -256,7 +256,7 @@ def get_sj_stats_table(access_token):
             'average_salary': get_salary_average_for_superjob(vacancies)
         }
     for language in vacancies_salary_statistics:
-        table_data.append(
+        vacancies_table.append(
             (
                 language,
                 vacancies_salary_statistics[language].get('vacancies_found'),
@@ -266,7 +266,7 @@ def get_sj_stats_table(access_token):
                 vacancies_salary_statistics[language].get('average_salary')
             )
         )
-    table_instance = AsciiTable(table_data, 'HeadHunter Moscow')
+    table_instance = AsciiTable(vacancies_table, 'HeadHunter Moscow')
     return table_instance.table
 
 
