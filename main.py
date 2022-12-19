@@ -8,6 +8,7 @@ HH_VACANCIES_URL = 'https://api.hh.ru/vacancies/'
 SJ_VACANCIES_URL = 'https://api.superjob.ru/2.0/vacancies/'
 PROGRAMMING_LANGUAGES = ['Python', 'Javascript', 'Java', 'Ruby', 'PHP', 'C++',
                          'C#', 'Swift', 'Go', 'Shell']
+HH_MOSCOW_ID = 1
 
 
 def predict_rub_salary(vacancy):
@@ -34,7 +35,7 @@ def get_all_vacancies_by_language(language):
         HH_VACANCIES_URL,
         params={
             'text': f'Программист {language}',
-            'area': 1,
+            'area': HH_MOSCOW_ID,
         }
     )
     response.raise_for_status()
@@ -46,7 +47,7 @@ def get_all_vacancies_by_language(language):
             HH_VACANCIES_URL,
             params={
                 'text': f'Программист {language}',
-                'area': 1,
+                'area': HH_MOSCOW_ID,
                 'page': page
             }
         )
@@ -64,7 +65,7 @@ def get_vacancies_stats_by_languages(languages):
             HH_VACANCIES_URL,
             params={
                 'text': f'Программист {language}',
-                'area': 1,
+                'area': HH_MOSCOW_ID,
             }
         )
         response.raise_for_status()
@@ -81,7 +82,7 @@ def get_number_of_vacancies_found(language):
         HH_VACANCIES_URL,
         params={
             'text': f'Программист {language}',
-            'area': 1,
+            'area': HH_MOSCOW_ID,
         }
     )
     response.raise_for_status()
@@ -155,15 +156,17 @@ def predict_rub_salary_for_superJob(vacancy):
 
 
 def get_all_vacancies_by_language_for_superjob(language, access_token):
+    programming_id = 48
+    moscow_id = 4
     response = requests.get(
         SJ_VACANCIES_URL,
         headers={
             'X-Api-App-Id': access_token
         },
         params={
-            'catalogues': 48,
+            'catalogues': programming_id,
             'keyword': language,
-            'town': 4,
+            'town': moscow_id,
         }
     )
     response.raise_for_status()
@@ -179,9 +182,9 @@ def get_all_vacancies_by_language_for_superjob(language, access_token):
                 'X-Api-App-Id': access_token
             },
             params={
-                'catalogues': 48,
+                'catalogues': programming_id,
                 'keyword': language,
-                'town': 4,
+                'town': moscow_id,
                 'page': page
             }
         )
@@ -201,9 +204,9 @@ def get_number_of_vacancies_found_for_superjob(language, access_token):
             'X-Api-App-Id': access_token
         },
         params={
-            'catalogues': 48,
+            'catalogues': programming_id,
             'keyword': language,
-            'town': 4,
+            'town': moscow_id,
         }
     )
     response.raise_for_status()
