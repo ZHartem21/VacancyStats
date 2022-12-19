@@ -57,7 +57,7 @@ def get_all_vacancies_by_language(language):
         decoded_page_response = page_response.json()
         page += 1
         vacancies.extend(decoded_page_response.get('items'))
-    return vacancies
+    return [vacancies, decoded_response.get('found')]
 
 
 def get_vacancies_stats_by_languages(languages):
@@ -77,18 +77,6 @@ def get_vacancies_stats_by_languages(languages):
             'average_salary': get_salary_average(response)
         }
     print(vacancies_by_language)
-
-
-def get_number_of_vacancies_found(language):
-    response = requests.get(
-        HH_VACANCIES_URL,
-        params={
-            'text': f'Программист {language}',
-            'area': HH_MOSCOW_ID,
-        }
-    )
-    response.raise_for_status()
-    return response.json().get('found')
 
 
 def get_number_of_processed_salaries(vacancies):
@@ -120,9 +108,11 @@ def get_hh_stats_table():
         )
     ]
     for language in PROGRAMMING_LANGUAGES:
-        vacancies = get_all_vacancies_by_language(language)
+        vacancies_parsed_from_hh = get_all_vacancies_by_language(language)
+        vacancies = vacancies_parsed_from_hh[0]
+        vacancies_total = vacancies_parsed_from_hh[1]
         vacancies_salary_statistics[language] = {
-            'vacancies_found': get_number_of_vacancies_found(language),
+            'vacancies_found': vacancies_total,
             'vacancies_processed': get_number_of_processed_salaries(vacancies),
             'average_salary': get_salary_average(vacancies)
         }
@@ -192,23 +182,7 @@ def get_all_vacancies_by_language_for_superjob(language, access_token):
         if more:
             page += 1
         vacancies.extend(decoded_page_response['objects'])
-    return vacancies
-
-
-def get_number_of_vacancies_found_for_superjob(language, access_token):
-    response = requests.get(
-        SJ_VACANCIES_URL,
-        headers={
-            'X-Api-App-Id': access_token
-        },
-        params={
-            'catalogues': SJ_PROGRAMMING_ID,
-            'keyword': language,
-            'town': SJ_MOSCOW_ID,
-        }
-    )
-    response.raise_for_status()
-    return response.json().get('total')
+    return [vacancies, decoded_response['total']]
 
 
 def get_number_of_processed_salaries_for_superjob(vacancies):
@@ -243,15 +217,14 @@ def get_sj_stats_table(access_token):
                 )
             ]
     for language in PROGRAMMING_LANGUAGES:
-        vacancies = get_all_vacancies_by_language_for_superjob(
+        vacancies_parsed_from_sj = get_all_vacancies_by_language_for_superjob(
                 language,
                 access_token
             )
+        vacancies = vacancies_parsed_from_sj[0]
+        vacancies_total = vacancies_parsed_from_sj[1]
         vacancies_salary_statistics[language] = {
-            'vacancies_found': get_number_of_vacancies_found_for_superjob(
-                language,
-                access_token
-            ),
+            'vacancies_found': vacancies_total,
             'vacancies_processed':
             get_number_of_processed_salaries_for_superjob(vacancies),
             'average_salary': get_salary_average_for_superjob(vacancies)
