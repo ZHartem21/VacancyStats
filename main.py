@@ -33,12 +33,13 @@ def predict_rub_salary(vacancy):
 
 
 def get_all_vacancies_by_language(language):
-    response = requests.get(
-        HH_VACANCIES_URL,
-        params={
+    params = {
             'text': f'Программист {language}',
             'area': HH_MOSCOW_ID,
-        }
+    }
+    response = requests.get(
+        HH_VACANCIES_URL,
+        params=params
     )
     response.raise_for_status()
     decoded_response = response.json()
@@ -46,13 +47,11 @@ def get_all_vacancies_by_language(language):
     page = decoded_response.get('page')
     pages = decoded_response.get('pages')
     while page < pages:
+        current_page = {'page': page}
+        params.update(current_page)
         page_response = requests.get(
             HH_VACANCIES_URL,
-            params={
-                'text': f'Программист {language}',
-                'area': HH_MOSCOW_ID,
-                'page': page
-            }
+            params=params
         )
         page_response.raise_for_status()
         decoded_page_response = page_response.json()
@@ -159,16 +158,17 @@ def predict_rub_salary_for_superJob(vacancy):
 
 
 def get_all_vacancies_by_language_for_superjob(language, access_token):
+    params = {
+            'catalogues': SJ_PROGRAMMING_ID,
+            'keyword': language,
+            'town': SJ_MOSCOW_ID,
+    }
     response = requests.get(
         SJ_VACANCIES_URL,
         headers={
             'X-Api-App-Id': access_token
         },
-        params={
-            'catalogues': SJ_PROGRAMMING_ID,
-            'keyword': language,
-            'town': SJ_MOSCOW_ID,
-        }
+        params=params
     )
     response.raise_for_status()
     decoded_response = response.json()
@@ -177,17 +177,14 @@ def get_all_vacancies_by_language_for_superjob(language, access_token):
     more = decoded_response['more']
     page = 1
     while more:
+        current_page = {'page': page}
+        params.update(current_page)
         page_response = requests.get(
             SJ_VACANCIES_URL,
             headers={
                 'X-Api-App-Id': access_token
             },
-            params={
-                'catalogues': SJ_PROGRAMMING_ID,
-                'keyword': language,
-                'town': SJ_MOSCOW_ID,
-                'page': page
-            }
+            params=params
         )
         page_response.raise_for_status()
         decoded_page_response = page_response.json()
