@@ -90,8 +90,7 @@ def get_number_of_processed_salaries(vacancies):
 def get_salary_average(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
-        if predict_rub_salary(vacancy):
-            processed_salaries.append(predict_rub_salary(vacancy))
+        processed_salaries.append(predict_rub_salary(vacancy))
     salary_average = sum(processed_salaries)/len(processed_salaries)
 
     return int(salary_average)
@@ -198,8 +197,7 @@ def get_number_of_processed_salaries_for_superjob(vacancies):
 def get_salary_average_for_superjob(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
-        if predict_rub_salary_for_superJob(vacancy):
-            processed_salaries.append(predict_rub_salary_for_superJob(vacancy))
+        processed_salaries.append(predict_rub_salary_for_superJob(vacancy))
     if processed_salaries:
         salary_average = sum(processed_salaries)/len(processed_salaries)
         return int(salary_average)
