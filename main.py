@@ -60,39 +60,12 @@ def get_all_vacancies_by_language(language):
     return [vacancies, decoded_response.get('found')]
 
 
-def get_vacancies_stats_by_languages(languages):
-    vacancies_by_language = {}
-    for language in languages:
-        response = requests.get(
-            HH_VACANCIES_URL,
-            params={
-                'text': f'Программист {language}',
-                'area': HH_MOSCOW_ID,
-            }
-        )
-        response.raise_for_status()
-        vacancies_by_language[language] = {
-            'vacancies_found': response.json().get('found'),
-            'vacancies_processed': get_number_of_processed_salaries(response),
-            'average_salary': get_salary_average(response)
-        }
-    print(vacancies_by_language)
-
-
-def get_number_of_processed_salaries(vacancies):
-    processed_salaries = []
-    for vacancy in vacancies:
-        processed_salaries.append(predict_rub_salary(vacancy))
-    return len(processed_salaries)
-
-
-def get_salary_average(vacancies):
+def get_salary_average_and_processed(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
         processed_salaries.append(predict_rub_salary(vacancy))
     salary_average = sum(processed_salaries)/len(processed_salaries)
-
-    return int(salary_average)
+    return [int(salary_average), len(processed_salaries)]
 
 
 def get_hh_stats_table():
@@ -106,13 +79,12 @@ def get_hh_stats_table():
         )
     ]
     for language in PROGRAMMING_LANGUAGES:
-        vacancies_parsed_from_hh = get_all_vacancies_by_language(language)
-        vacancies = vacancies_parsed_from_hh[0]
-        vacancies_total = vacancies_parsed_from_hh[1]
+        vacancies, vacancies_total = get_all_vacancies_by_language(language)
+        average, processed = get_salary_average_and_processed(vacancies)
         vacancies_salary_statistics[language] = {
             'vacancies_found': vacancies_total,
-            'vacancies_processed': get_number_of_processed_salaries(vacancies),
-            'average_salary': get_salary_average(vacancies)
+            'vacancies_processed': processed,
+            'average_salary': average
         }
     for language in vacancies_salary_statistics:
         vacancies_table.append(
@@ -129,7 +101,7 @@ def get_hh_stats_table():
     return table_instance
 
 
-def predict_rub_salary_for_superJob(vacancy):
+def predict_rub_salary_for_sj(vacancy):
     if not vacancy['currency'] == 'rub':
         return None
     if vacancy['payment_from'] and not vacancy['payment_to']:
@@ -145,7 +117,7 @@ def predict_rub_salary_for_superJob(vacancy):
     return None
 
 
-def get_all_vacancies_by_language_for_superjob(language, access_token):
+def get_all_vacancies_by_language_for_sj(language, access_token):
     params = {
             'catalogues': SJ_PROGRAMMING_ID,
             'keyword': language,
@@ -183,22 +155,13 @@ def get_all_vacancies_by_language_for_superjob(language, access_token):
     return [vacancies, decoded_response['total']]
 
 
-def get_number_of_processed_salaries_for_superjob(vacancies):
+def get_salary_average_for_sj(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
-        processed_salaries.append(predict_rub_salary_for_superJob(vacancy))
-    if processed_salaries:
-        return len(processed_salaries)
-    return None
-
-
-def get_salary_average_for_superjob(vacancies):
-    processed_salaries = []
-    for vacancy in vacancies:
-        processed_salaries.append(predict_rub_salary_for_superJob(vacancy))
+        processed_salaries.append(predict_rub_salary_for_sj(vacancy))
     if processed_salaries:
         salary_average = sum(processed_salaries)/len(processed_salaries)
-        return int(salary_average)
+        return [int(salary_average), len(processed_salaries)]
     return None
 
 
@@ -213,17 +176,15 @@ def get_sj_stats_table(access_token):
                 )
             ]
     for language in PROGRAMMING_LANGUAGES:
-        vacancies_parsed_from_sj = get_all_vacancies_by_language_for_superjob(
+        vacancies, vacancies_total = get_all_vacancies_by_language_for_sj(
                 language,
                 access_token
             )
-        vacancies = vacancies_parsed_from_sj[0]
-        vacancies_total = vacancies_parsed_from_sj[1]
+        average, processed = get_salary_average_for_sj(vacancies)
         vacancies_salary_statistics[language] = {
             'vacancies_found': vacancies_total,
-            'vacancies_processed':
-            get_number_of_processed_salaries_for_superjob(vacancies),
-            'average_salary': get_salary_average_for_superjob(vacancies)
+            'vacancies_processed': processed,
+            'average_salary': average
         }
     for language in vacancies_salary_statistics:
         vacancies_table.append(
