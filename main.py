@@ -9,6 +9,8 @@ SJ_VACANCIES_URL = 'https://api.superjob.ru/2.0/vacancies/'
 PROGRAMMING_LANGUAGES = ['Python', 'Javascript', 'Java', 'Ruby', 'PHP', 'C++',
                          'C#', 'Swift', 'Go', 'Shell']
 HH_MOSCOW_ID = 1
+SJ_PROGRAMMING_ID = 48
+SJ_MOSCOW_ID = 4
 
 
 def predict_rub_salary(vacancy):
@@ -39,9 +41,10 @@ def get_all_vacancies_by_language(language):
         }
     )
     response.raise_for_status()
+    decoded_response = response.json()
     vacancies = []
-    page = response.json().get('page')
-    pages = response.json().get('pages')
+    page = decoded_response.get('page')
+    pages = decoded_response.get('pages')
     while page < pages:
         page_response = requests.get(
             HH_VACANCIES_URL,
@@ -52,8 +55,9 @@ def get_all_vacancies_by_language(language):
             }
         )
         page_response.raise_for_status()
+        decoded_page_response = page_response.json()
         page += 1
-        for vacancy in page_response.json().get('items'):
+        for vacancy in decoded_page_response.get('items'):
             vacancies.append(vacancy)
     return vacancies
 
@@ -156,24 +160,23 @@ def predict_rub_salary_for_superJob(vacancy):
 
 
 def get_all_vacancies_by_language_for_superjob(language, access_token):
-    programming_id = 48
-    moscow_id = 4
     response = requests.get(
         SJ_VACANCIES_URL,
         headers={
             'X-Api-App-Id': access_token
         },
         params={
-            'catalogues': programming_id,
+            'catalogues': SJ_PROGRAMMING_ID,
             'keyword': language,
-            'town': moscow_id,
+            'town': SJ_MOSCOW_ID,
         }
     )
     response.raise_for_status()
+    decoded_response = response.json()
     vacancies = []
-    for vacancy in response.json()['objects']:
+    for vacancy in decoded_response['objects']:
         vacancies.append(vacancy)
-    more = response.json()['more']
+    more = decoded_response['more']
     page = 1
     while more:
         page_response = requests.get(
@@ -182,17 +185,18 @@ def get_all_vacancies_by_language_for_superjob(language, access_token):
                 'X-Api-App-Id': access_token
             },
             params={
-                'catalogues': programming_id,
+                'catalogues': SJ_PROGRAMMING_ID,
                 'keyword': language,
-                'town': moscow_id,
+                'town': SJ_MOSCOW_ID,
                 'page': page
             }
         )
         page_response.raise_for_status()
-        more = page_response.json()['more']
+        decoded_page_response = page_response.json()
+        more = decoded_page_response['more']
         if more:
             page += 1
-        for vacancy in page_response.json()['objects']:
+        for vacancy in decoded_page_response['objects']:
             vacancies.append(vacancy)
     return vacancies
 
@@ -204,9 +208,9 @@ def get_number_of_vacancies_found_for_superjob(language, access_token):
             'X-Api-App-Id': access_token
         },
         params={
-            'catalogues': programming_id,
+            'catalogues': SJ_PROGRAMMING_ID,
             'keyword': language,
-            'town': moscow_id,
+            'town': SJ_MOSCOW_ID,
         }
     )
     response.raise_for_status()
