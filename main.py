@@ -37,15 +37,9 @@ def get_all_vacancies_by_language(language):
             'text': f'Программист {language}',
             'area': HH_MOSCOW_ID,
     }
-    response = requests.get(
-        HH_VACANCIES_URL,
-        params=params
-    )
-    response.raise_for_status()
-    decoded_response = response.json()
     vacancies = []
-    page = decoded_response.get('page')
-    pages = decoded_response.get('pages')
+    page = 1
+    pages = 10
     while page < pages:
         current_page = {'page': page}
         params.update(current_page)
@@ -55,9 +49,11 @@ def get_all_vacancies_by_language(language):
         )
         page_response.raise_for_status()
         decoded_page_response = page_response.json()
+        page = decoded_page_response.get('page')
+        pages = decoded_page_response.get('pages')
         page += 1
         vacancies.extend(decoded_page_response.get('items'))
-    return [vacancies, decoded_response.get('found')]
+    return [vacancies, decoded_page_response.get('found')]
 
 
 def get_salary_average_and_processed(vacancies):
