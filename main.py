@@ -57,8 +57,7 @@ def get_all_vacancies_by_language(language):
         page_response.raise_for_status()
         decoded_page_response = page_response.json()
         page += 1
-        for vacancy in decoded_page_response.get('items'):
-            vacancies.append(vacancy)
+        vacancies.extend(decoded_page_response.get('items'))
     return vacancies
 
 
@@ -174,8 +173,7 @@ def get_all_vacancies_by_language_for_superjob(language, access_token):
     response.raise_for_status()
     decoded_response = response.json()
     vacancies = []
-    for vacancy in decoded_response['objects']:
-        vacancies.append(vacancy)
+    vacancies.extend(decoded_response['objects'])
     more = decoded_response['more']
     page = 1
     while more:
@@ -196,8 +194,7 @@ def get_all_vacancies_by_language_for_superjob(language, access_token):
         more = decoded_page_response['more']
         if more:
             page += 1
-        for vacancy in decoded_page_response['objects']:
-            vacancies.append(vacancy)
+        vacancies.extend(decoded_page_response['objects'])
     return vacancies
 
 
