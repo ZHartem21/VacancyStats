@@ -13,23 +13,31 @@ SJ_PROGRAMMING_ID = 48
 SJ_MOSCOW_ID = 4
 
 
+def calculate_predicted_salary(salary_from, salary_to):
+    if salary_from and not salary_to:
+        salary_approximation = salary_from * 1.2
+        return salary_approximation
+    if not salary_from and salary_to:
+        salary_approximation = salary_to * 0.8
+        return salary_approximation
+    if salary_from and salary_to:
+        salary_approximation = (salary_from +
+                                salary_to) / 2
+        return salary_approximation
+    return None
+
+
 def predict_rub_salary(vacancy):
     if not vacancy['salary']:
         return None
     salary = vacancy['salary']
     if not salary['currency'] == 'RUR':
         return None
-    if salary['from'] and not salary['to']:
-        salary_approximation = salary['from'] * 1.2
-        return salary_approximation
-    if not salary['from'] and salary['to']:
-        salary_approximation = salary['to'] * 0.8
-        return salary_approximation
-    if salary['from'] and salary['to']:
-        salary_approximation = (vacancy['salary']['from'] +
-                                vacancy['salary']['to']) / 2
-        return salary_approximation
-    return None
+    salary_approximation = calculate_predicted_salary(
+            salary['from'],
+            salary['to']
+        )
+    return salary_approximation
 
 
 def get_all_vacancies_by_language(language):
@@ -99,17 +107,8 @@ def get_hh_stats_table():
 def predict_rub_salary_for_sj(vacancy):
     if not vacancy['currency'] == 'rub':
         return None
-    if vacancy['payment_from'] and not vacancy['payment_to']:
-        salary_approximation = vacancy['payment_from'] * 1.2
-        return salary_approximation
-    if not vacancy['payment_from'] and vacancy['payment_to']:
-        salary_approximation = vacancy['payment_to'] * 0.8
-        return salary_approximation
-    if vacancy['payment_from'] and vacancy['payment_to']:
-        salary_approximation = (vacancy['payment_from'] +
-                                vacancy['payment_to']) / 2
-        return salary_approximation
-    return None
+    salary_approximation = calculate_predicted_salary(vacancy['payment_from'], vacancy['payment_to'])
+    return salary_approximation
 
 
 def get_all_vacancies_by_language_for_sj(language, access_token):
