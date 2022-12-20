@@ -41,8 +41,7 @@ def get_all_vacancies_by_language(language):
     page = 1
     pages = 10
     while page < pages:
-        current_page = {'page': page}
-        params.update(current_page)
+        params['page'] = page
         page_response = requests.get(
             HH_VACANCIES_URL,
             params=params
@@ -133,8 +132,7 @@ def get_all_vacancies_by_language_for_sj(language, access_token):
     more = decoded_response['more']
     page = 1
     while more:
-        current_page = {'page': page}
-        params.update(current_page)
+        params['page'] = page
         page_response = requests.get(
             SJ_VACANCIES_URL,
             headers={
