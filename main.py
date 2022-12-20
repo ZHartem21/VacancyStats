@@ -158,7 +158,7 @@ def get_salary_average_for_sj(vacancies):
     if processed_salaries:
         salary_average = sum(processed_salaries)/len(processed_salaries)
         return (int(salary_average), len(processed_salaries))
-    return None
+    return (None, None)
 
 
 def get_sj_stats_table(access_token):
