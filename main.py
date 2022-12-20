@@ -53,7 +53,7 @@ def get_all_vacancies_by_language(language):
         pages = decoded_page_response.get('pages')
         page += 1
         vacancies.extend(decoded_page_response.get('items'))
-    return [vacancies, decoded_page_response.get('found')]
+    return (vacancies, decoded_page_response.get('found'))
 
 
 def get_salary_average_and_processed(vacancies):
@@ -61,7 +61,7 @@ def get_salary_average_and_processed(vacancies):
     for vacancy in vacancies:
         processed_salaries.append(predict_rub_salary(vacancy))
     salary_average = sum(processed_salaries)/len(processed_salaries)
-    return [int(salary_average), len(processed_salaries)]
+    return (int(salary_average), len(processed_salaries))
 
 
 def get_hh_stats_table():
@@ -148,7 +148,7 @@ def get_all_vacancies_by_language_for_sj(language, access_token):
         if more:
             page += 1
         vacancies.extend(decoded_page_response['objects'])
-    return [vacancies, decoded_response['total']]
+    return (vacancies, decoded_response['total'])
 
 
 def get_salary_average_for_sj(vacancies):
@@ -157,7 +157,7 @@ def get_salary_average_for_sj(vacancies):
         processed_salaries.append(predict_rub_salary_for_sj(vacancy))
     if processed_salaries:
         salary_average = sum(processed_salaries)/len(processed_salaries)
-        return [int(salary_average), len(processed_salaries)]
+        return (int(salary_average), len(processed_salaries))
     return None
 
 
