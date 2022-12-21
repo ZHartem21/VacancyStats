@@ -24,15 +24,15 @@ def calculate_predicted_salary(salary_from, salary_to):
         salary_approximation = (salary_from +
                                 salary_to) / 2
         return salary_approximation
-    return None
+    return False
 
 
 def predict_rub_salary(vacancy):
     if not vacancy['salary']:
-        return None
+        return False
     salary = vacancy['salary']
     if not salary['currency'] == 'RUR':
-        return None
+        return False
     salary_approximation = calculate_predicted_salary(
             salary['from'],
             salary['to']
@@ -66,7 +66,8 @@ def get_all_vacancies_by_language(language):
 def get_salary_average_and_processed(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
-        processed_salaries.append(predict_rub_salary(vacancy))
+        if predict_rub_salary(vacancy):
+            processed_salaries.append(predict_rub_salary(vacancy))
     if len(processed_salaries):
         salary_average = sum(processed_salaries)/len(processed_salaries)
     else:
@@ -109,8 +110,11 @@ def get_hh_stats_table():
 
 def predict_rub_salary_for_sj(vacancy):
     if not vacancy['currency'] == 'rub':
-        return None
-    salary_approximation = calculate_predicted_salary(vacancy['payment_from'], vacancy['payment_to'])
+        return False
+    salary_approximation = calculate_predicted_salary(
+            vacancy['payment_from'],
+            vacancy['payment_to']
+        )
     return salary_approximation
 
 
@@ -154,7 +158,8 @@ def get_all_vacancies_by_language_for_sj(language, access_token):
 def get_salary_average_for_sj(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
-        processed_salaries.append(predict_rub_salary_for_sj(vacancy))
+        if predict_rub_salary_for_sj(vacancy):
+            processed_salaries.append(predict_rub_salary_for_sj(vacancy))
     if processed_salaries:
         salary_average = sum(processed_salaries)/len(processed_salaries)
         return (int(salary_average), len(processed_salaries))
