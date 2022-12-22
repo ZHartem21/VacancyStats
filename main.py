@@ -63,15 +63,15 @@ def get_all_vacancies_by_language(language):
     return (vacancies, decoded_page_response.get('found'))
 
 
-def get_salary_average_and_processed(vacancies):
+def get_average_salary_and_processed(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
         processed_salaries.append(predict_rub_salary(vacancy))
     if len(processed_salaries):
-        salary_average = sum(processed_salaries)/len(processed_salaries)
+        average_salary = sum(processed_salaries)/len(processed_salaries)
     else:
         return (None, None)
-    return (int(salary_average), len(processed_salaries))
+    return (int(average_salary), len(processed_salaries))
 
 
 def get_hh_stats_table():
@@ -86,7 +86,7 @@ def get_hh_stats_table():
     ]
     for language in PROGRAMMING_LANGUAGES:
         vacancies, vacancies_total = get_all_vacancies_by_language(language)
-        average, processed = get_salary_average_and_processed(vacancies)
+        average, processed = get_average_salary_and_processed(vacancies)
         vacancies_salary_statistics[language] = {
             'vacancies_found': vacancies_total,
             'vacancies_processed': processed,
@@ -154,13 +154,13 @@ def get_all_vacancies_by_language_for_sj(language, access_token):
     return (vacancies, decoded_response['total'])
 
 
-def get_salary_average_for_sj(vacancies):
+def get_average_salary_for_sj(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
         processed_salaries.append(predict_rub_salary_for_sj(vacancy))
     if processed_salaries:
-        salary_average = sum(processed_salaries)/len(processed_salaries)
-        return (int(salary_average), len(processed_salaries))
+        average_salary = sum(processed_salaries)/len(processed_salaries)
+        return (int(average_salary), len(processed_salaries))
     return (None, None)
 
 
@@ -179,7 +179,7 @@ def get_sj_stats_table(access_token):
                 language,
                 access_token
             )
-        average, processed = get_salary_average_for_sj(vacancies)
+        average, processed = get_average_salary_for_sj(vacancies)
         vacancies_salary_statistics[language] = {
             'vacancies_found': vacancies_total,
             'vacancies_processed': processed,
