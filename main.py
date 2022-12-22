@@ -67,7 +67,7 @@ def get_average_salary_and_processed(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
         processed_salaries.append(predict_rub_salary(vacancy))
-    if len(processed_salaries):
+    if processed_salaries:
         average_salary = sum(processed_salaries)/len(processed_salaries)
     else:
         return (None, None)
