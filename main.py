@@ -66,8 +66,7 @@ def get_all_vacancies_by_language(language):
 def get_salary_average_and_processed(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
-        if predict_rub_salary(vacancy):
-            processed_salaries.append(predict_rub_salary(vacancy))
+        processed_salaries.append(predict_rub_salary(vacancy))
     if len(processed_salaries):
         salary_average = sum(processed_salaries)/len(processed_salaries)
     else:
@@ -158,8 +157,7 @@ def get_all_vacancies_by_language_for_sj(language, access_token):
 def get_salary_average_for_sj(vacancies):
     processed_salaries = []
     for vacancy in vacancies:
-        if predict_rub_salary_for_sj(vacancy):
-            processed_salaries.append(predict_rub_salary_for_sj(vacancy))
+        processed_salaries.append(predict_rub_salary_for_sj(vacancy))
     if processed_salaries:
         salary_average = sum(processed_salaries)/len(processed_salaries)
         return (int(salary_average), len(processed_salaries))
